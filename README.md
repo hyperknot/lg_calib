@@ -12,7 +12,7 @@ For calibrating I'm using a X-Rite i1 Display Pro series (i1D3) colorimeter. It 
 
 <img src="assets/i1d3.jpg" alt="i1d3" width="250" />
 
-Parts
+## Steps
 
 1. [First setup](1_first_setup.md)
 

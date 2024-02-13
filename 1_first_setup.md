@@ -5,6 +5,7 @@
 3. On Terms and Conditions, only select the 1. option. Do not check 2., 3., 4., etc. to avoid adverts.
 
 4. All AI: **Off**
+   
    Always Ready: **Off**
 5. General / OLED Care / Device Self Care / Energy Saving / Energy Saving Step: **Off**
 6. General / OLED Care / OLED Panel Care / Screen Move: **Off**

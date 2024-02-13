@@ -26,6 +26,4 @@
 
 5. Make sure it appears, click Yes.
 
-
-
-bscpy setup is done.
+6. bscpy setup is done.

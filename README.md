@@ -10,7 +10,7 @@ I'm using a G2 with the 04.x firmware. Feel free to open a Pull Request (or just
 
 For calibrating I'm using a X-Rite i1 Display Pro series (i1D3) colorimeter. It has many different names, if it looks like this, it should work.
 
-<img src="assets/i1d3.jpg" alt="i1d3" width="50%" />
+<img src="assets/i1d3.jpg" alt="i1d3" width="250" />
 
 Parts
 

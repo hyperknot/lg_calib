@@ -1,0 +1,14 @@
+{
+  "whiteBalanceMethod": "22",
+  "whiteBalanceRed": [2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  "whiteBalanceGreen": [2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  "whiteBalanceBlue": [2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  "whiteBalancePoint": "low",
+  "whiteBalanceRedOffset": "-2",
+  "whiteBalanceGreenOffset": "-2",
+  "whiteBalanceBlueOffset": "-2",
+  "whiteBalanceRedGain": "0",
+  "whiteBalanceGreenGain": "0",
+  "whiteBalanceBlueGain": "0",
+  "whiteBalanceIre": "10"
+}

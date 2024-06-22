@@ -14,14 +14,17 @@ HOST = '192.168.1.12'
 
 DEFAULT_SDR_MODE = 'expert2'
 DEFAULT_HDR_MODE = 'hdrFilmMaker'
+DEFAULT_DOVI_MODE = 'dolbyHdrCinema'
 
-
-CUSTOM_HDR_WB = {}
 try:
-    CUSTOM_HDR_WB = json.load(open(Path('data') / 'hdr_wb.json'))
+    CUSTOM_WB_HDR = json.load(open(Path('data') / 'wb_hdr.json'))
 except Exception:
-    CUSTOM_HDR_WB = {}
+    CUSTOM_WB_HDR = {}
 
+try:
+    CUSTOM_WB_DOVI = json.load(open(Path('data') / 'wb_dovi.json'))
+except Exception:
+    CUSTOM_WB_DOVI = {}
 
 COMMAND_AI_OFF = (
     'set_current_picture_settings',
@@ -56,17 +59,25 @@ COMMON_SETTINGS = {
     'truMotionMode': 'off',
 }
 
-
 MODE_SETTINGS = {
     'SDR': {**COMMON_SETTINGS},
     'HDR': {
         **COMMON_SETTINGS,
         'backlight': '100',
         'contrast': '100',
-        'hdrDynamicToneMapping': 'off',
         'peakBrightness': 'high',
         'gamma': 'medium',
-        **CUSTOM_HDR_WB,
+        'hdrDynamicToneMapping': 'off',
+        **CUSTOM_WB_HDR,
+    },
+    'DOVI': {
+        **COMMON_SETTINGS,
+        'backlight': '100',
+        'contrast': '100',
+        'peakBrightness': 'high',
+        'gamma': 'medium',
+        'colorGamut': 'native',
+        'dolbyPrecisionDetail': 'off',
     },
 }
 
@@ -89,6 +100,13 @@ OVERRIDES = {
         # 'hdrGame': {'hdrDynamicToneMapping': 'HGIG'},
         # 'hdrCinema': {},
         'hdrFilmMaker': {},
+    },
+    'DOVI': {
+        # 'dolbyHdrVivid': {},
+        # 'dolbyHdrStandard': {},
+        # 'dolbyHdrGame': {},
+        # 'dolbyHdrCinemaBright': {},
+        # 'dolbyHdrCinema': {},
     },
 }
 
@@ -124,11 +142,11 @@ def configure_modes(mode_type):
             ]
         )
 
-    # default mode
-    if mode_type == 'SDR':
-        default_mode = DEFAULT_SDR_MODE
-    elif mode_type == 'HDR':
-        default_mode = DEFAULT_HDR_MODE
+    default_mode = {
+        'SDR': DEFAULT_SDR_MODE,
+        'HDR': DEFAULT_HDR_MODE,
+        'DOVI': DEFAULT_DOVI_MODE,
+    }[mode_type]
 
     commands.append(('set_current_picture_mode', [default_mode]))
 
@@ -150,6 +168,12 @@ def sdr():
 def hdr():
     """Configure HDR mode."""
     configure_modes('HDR')
+
+
+@cli.command()
+def dovi():
+    """Configure DOVI mode."""
+    configure_modes('DOVI')
 
 
 if __name__ == '__main__':

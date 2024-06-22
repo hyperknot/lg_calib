@@ -105,8 +105,8 @@ OVERRIDES = {
         # 'dolbyHdrVivid': {},
         # 'dolbyHdrStandard': {},
         # 'dolbyHdrGame': {},
-        # 'dolbyHdrCinemaBright': {},
-        # 'dolbyHdrCinema': {},
+        'dolbyHdrCinemaBright': {},
+        'dolbyHdrCinema': {},
     },
 }
 

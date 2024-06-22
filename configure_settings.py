@@ -1,12 +1,27 @@
 #!/usr/bin/env python
 
 import asyncio
+import json
 import time
+from pathlib import Path
+
+import click
 
 from bscpylgtv import WebOsClient
 
 
 HOST = '192.168.1.12'
+
+DEFAULT_SDR_MODE = 'expert2'
+DEFAULT_HDR_MODE = 'hdrFilmMaker'
+
+
+CUSTOM_HDR_WB = {}
+try:
+    CUSTOM_HDR_WB = json.load(open(Path('data') / 'hdr_wb.json'))
+except Exception:
+    CUSTOM_HDR_WB = {}
+
 
 COMMAND_AI_OFF = (
     'set_current_picture_settings',
@@ -31,7 +46,7 @@ COMMON_SETTINGS = {
     'color': '50',
     'colorGamut': 'auto',
     'dynamicColor': 'off',
-    'colorTemperature': '50',
+    'colorTemperature': '-45',  # -50 => Warm 50
     'sharpness': '0',
     'superResolution': 'off',
     'noiseReduction': 'off',
@@ -41,43 +56,6 @@ COMMON_SETTINGS = {
     'truMotionMode': 'off',
 }
 
-HDR_WHITE_BALANCE_SETTINGS = {
-    'whiteBalanceMethod': '22code',
-    'whiteBalanceRed': [
-        0,
-        2,
-        0,
-        1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -2,
-        -2,
-        -2,
-        -1,
-        -1,
-        -2,
-        0,
-        0,
-    ],
-    'whiteBalanceGreen': [1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, -2, -2, 0, 0, 0, 0, 0, 0],
-    'whiteBalanceBlue': [-1, 1, -1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 3, 4, 4, 0, 0],
-    'whiteBalancePoint': 'low',
-    'whiteBalanceRedOffset': '0',
-    'whiteBalanceGreenOffset': '0',
-    'whiteBalanceBlueOffset': '0',
-    'whiteBalanceRedGain': '0',
-    'whiteBalanceGreenGain': '0',
-    'whiteBalanceBlueGain': '0',
-    'whiteBalanceCodeValue': '20',
-}
 
 MODE_SETTINGS = {
     'SDR': {**COMMON_SETTINGS},
@@ -85,33 +63,31 @@ MODE_SETTINGS = {
         **COMMON_SETTINGS,
         'backlight': '100',
         'contrast': '100',
-        'colorTemperature': '-50',
         'hdrDynamicToneMapping': 'off',
         'peakBrightness': 'high',
         'gamma': 'medium',
-        **HDR_WHITE_BALANCE_SETTINGS,
+        **CUSTOM_HDR_WB,
     },
 }
 
-
 OVERRIDES = {
     'SDR': {
-        'vivid': {},
-        'normal': {},
-        'eco': {'backlight': '0', 'colorGamut': 'native'},
-        'sports': {},
-        'game': {'gamma': 'medium'},
-        'filmMaker': {},
-        'cinema': {'backlight': '84', 'colorGamut': 'native'},
-        'expert1': {'backlight': '43', 'gamma': 'medium', 'colorGamut': 'native'},
-        'expert2': {'colorGamut': 'native'},
+        # 'vivid': {},
+        # 'normal': {},
+        # 'eco': {},
+        # 'sports': {},
+        # 'game': {'gamma': 'medium'},
+        # 'filmMaker': {},
+        # 'cinema': {'backlight': '84', 'colorGamut': 'native'},
+        # 'expert1': {'backlight': '43', 'gamma': 'medium', 'colorGamut': 'native'},
+        'expert2': {},
     },
     'HDR': {
-        'hdrVivid': {},
-        'hdrStandard': {},
-        'hdrCinemaBright': {},
-        'hdrGame': {'hdrDynamicToneMapping': 'HGIG'},
-        'hdrCinema': {},
+        # 'hdrVivid': {},
+        # 'hdrStandard': {},
+        # 'hdrCinemaBright': {},
+        # 'hdrGame': {'hdrDynamicToneMapping': 'HGIG'},
+        # 'hdrCinema': {},
         'hdrFilmMaker': {},
     },
 }
@@ -137,7 +113,8 @@ async def run_commands(commands):
 
 def configure_modes(mode_type):
     base_settings = MODE_SETTINGS[mode_type]
-    commands = []
+    commands = [('button', ['INFO'])]
+
     for mode, settings in OVERRIDES[mode_type].items():
         commands.extend(
             [
@@ -146,12 +123,34 @@ def configure_modes(mode_type):
                 COMMAND_AI_OFF,
             ]
         )
-    default_mode = 'eco' if mode_type == 'SDR' else 'hdrStandard'
+
+    # default mode
+    if mode_type == 'SDR':
+        default_mode = DEFAULT_SDR_MODE
+    elif mode_type == 'HDR':
+        default_mode = DEFAULT_HDR_MODE
+
     commands.append(('set_current_picture_mode', [default_mode]))
+
     asyncio.run(run_commands(commands))
 
 
-if __name__ == '__main__':
-    asyncio.run(run_commands([('button', ['INFO'])]))
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+def sdr():
+    """Configure SDR mode."""
     configure_modes('SDR')
+
+
+@cli.command()
+def hdr():
+    """Configure HDR mode."""
     configure_modes('HDR')
+
+
+if __name__ == '__main__':
+    cli()

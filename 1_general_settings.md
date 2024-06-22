@@ -10,5 +10,3 @@
 7. General / OLED Care / OLED Panel Care / Adjust Logo Brightness: **Off**
 8. General / AI Service / **Everything Off**
 
----
-
